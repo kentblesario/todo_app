@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalDismissReasons, NgbModal, NgbToast, NgbToastHeader } from '@ng-bootstrap/ng-bootstrap';
 import { AddTodoService } from './services/add-todo.service';
+import { CompleteTodoService } from './services/complete-todo.service';
 import { DelTodoService } from './services/del-todo.service';
 import { GetAllTodoService } from './services/get-all-todo.service';
 
@@ -13,10 +14,13 @@ export class AppComponent {
   title = 'MEAN TODO APP';
   tasks:any= [];
   todoTitle = '';
+  page:number = 1;
+  pageSize: number = 10;
   constructor(
     public addTodoService: AddTodoService,
     public getTodoService: GetAllTodoService,
     public delTodoService: DelTodoService,
+    public completeTodoService: CompleteTodoService
   ) {
 
   }
@@ -28,10 +32,19 @@ export class AppComponent {
   }
 
   addTask() {
-    console.log(this.todoTitle);
-    this.addTodoService.addTodo().subscribe(async (res: any) => {
+    let task = {title: this.todoTitle}
+    this.addTodoService.addTodo(task).subscribe(async (res: any) => {
       if (res.success) {
-        console.log(res.data);
+       this.getTodoList();
+
+      }
+    })
+  }
+
+  updateToComplete(_id:any){
+    this.completeTodoService.completeTodo(_id).subscribe(async (res: any) => {
+      if (res.success) {
+       this.getTodoList();
 
       }
     })
@@ -50,7 +63,7 @@ export class AppComponent {
     this.delTodoService.delTodo(_id).subscribe(async (res: any) => {
       if (res.success) {
         console.log(res.data);
-
+        this.getTodoList();
       }
     })
 

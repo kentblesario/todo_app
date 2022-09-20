@@ -9,4 +9,6 @@ router.get("/todo/getTodoList", todo.getTodo);
 
 router.delete("/todo/delTodo", todo.delTodo);
 
+router.put("/todo/completeTodo", todo.completeTodo);
+
 module.exports = router;

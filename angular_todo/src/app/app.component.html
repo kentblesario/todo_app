@@ -2,33 +2,36 @@
   <div class="card">
     <div class="card-header">
       <h4 class="text-center text-medium">Welcome to your TO DO Application</h4>
-        <div class="input-group mb-3 mt-3 w-50">
-          <input type="text" class="form-control" [(ngModel)]="todoTitle" placeholder="Add Task Here..." aria-label="Add Task Here..." >
-          <div class="input-group-append">
-            <button class="btn btn-outline-primary" type="submit" (click)="addTask()">Add Task</button>
-          </div>
+      <div class="input-group mb-3 mt-3 w-50">
+        <input type="text" class="form-control" [(ngModel)]="todoTitle" placeholder="Add Task Here..."
+          aria-label="Add Task Here...">
+        <div class="input-group-append">
+          <button class="btn btn-outline-primary" type="submit" (click)="addTask()">Add Task</button>
         </div>
+      </div>
     </div>
     <div class="card-body">
       <ng-container *ngIf="tasks.length < 1">
-       <div class="text-center text-medium mt-5 mb-5">
-        <h5>You have no pending tasks</h5>
-        <h6>Please add some task to do...</h6>
-       </div>
+        <div class="text-center text-medium mt-5 mb-5">
+          <h5>You have no pending tasks</h5>
+          <h6>Please add some task to do...</h6>
+        </div>
       </ng-container>
       <ng-container *ngIf="tasks.length > 0">
         <div class="alert alert-primary" role="alert" *ngFor="let task of tasks">
-        <div class="row">
-          <div class="col-8">
-            <h4>{{task?.title}}</h4>
-            <small>Added at: {{task?.dateAdded|date:'medium'}}</small>
-          </div>
-          <div class="col-4 ">
-            <i class="fa fa-trash fa-2x m-3 text-dark" (click)="delTask(task._id)"></i>
-                        <i class="fa fa-edit fa-2x m-3 text-secondary"></i>
+          <div class="row">
+            <div class="col-8" (click)="task.status == 0 && updateToComplete(task._id)">
+              <h4 [ngStyle]="{'text-decoration': task?.status == 0 ? 'none' : 'line-through'}">{{task?.title}}</h4>
+              <small>Added at: {{task?.dateAdded|date:'medium'}}</small>
+            </div>
+            <div class="col-4 ">
+              <i class="fa fa-trash fa-2x m-3 text-dark" (click)="delTask(task._id)"></i>
+              <i class="fa fa-edit fa-2x m-3 text-secondary"></i>
+            </div>
           </div>
         </div>
-        </div>
+        <pagination-controls class="float-right" id="server" (pageChange)="getTodoList()"></pagination-controls>
+
       </ng-container>
 
     </div>

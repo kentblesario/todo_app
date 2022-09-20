@@ -4,14 +4,15 @@ const mongoose = require('mongoose')
 const ObjectId = mongoose.Types.ObjectId;
 
 exports.addTask = async (req, res, next) => {
-    console.log(req.body)
-    Todo.create(req.body, (err, response) => {
-        if (err) {
-            return res.status(500).send({ success: false, message: err.message });
-        } else {
-            return res.status(200).send({ success: true, data: response, message: "Successfully added a task." });
-        }
-    });
+    console.log('add', req.body)
+    req.body.dateAdded = new Date().getTime(),
+        Todo.create(req.body, (err, response) => {
+            if (err) {
+                return res.status(500).send({ success: false, message: err.message });
+            } else {
+                return res.status(200).send({ success: true, data: response, message: "Successfully added a task." });
+            }
+        });
 };
 
 exports.getTodo = async (req, res, next) => {
@@ -19,7 +20,6 @@ exports.getTodo = async (req, res, next) => {
     let totalCount = 1;
     await Todo.find({})
         .then(function (response, err) {
-            console.log(response);
             if (response) {
                 return res.status(200).send({ success: true, data: response, totalCount: totalCount });
             } else {
@@ -30,7 +30,7 @@ exports.getTodo = async (req, res, next) => {
 
 exports.delTodo = async (req, res, next) => {
     console.log(req.query._id)
-    await Todo.deleteOne({  _id: ObjectId(req.query._id),})
+    await Todo.deleteOne({ _id: ObjectId(req.query._id), })
         .then(function (response, err) {
             console.log(response);
             if (response) {
@@ -39,5 +39,29 @@ exports.delTodo = async (req, res, next) => {
                 return res.status(500).send({ success: false, message: err });
             }
         })
+
+};
+
+exports.completeTodo = async (req, res, next) => {
+    console.log(req.body)
+    console.log(req.query)
+    console.log(req.params)
+    await Todo.updateOne( {
+        _id: ObjectId(req.body._id),
+    },
+    {
+        $set:{status: 1}
+    } )
+    .then(function (response, err) {
+        console.log(response);
+        if (response) {
+            return res.status(200).send({ success: true, message: 'Successfully completed the task.' });
+        } else {
+            return res.status(500).send({ success: false, message: err });
+        }
+    })
+
+  
+
 
 };
