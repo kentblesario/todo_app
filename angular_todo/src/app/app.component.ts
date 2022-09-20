@@ -1,3 +1,4 @@
+import { UpdateTodoService } from './services/update-todo.service';
 import { Component } from '@angular/core';
 import { ModalDismissReasons, NgbModal, NgbToast, NgbToastHeader } from '@ng-bootstrap/ng-bootstrap';
 import { AddTodoService } from './services/add-todo.service';
@@ -14,47 +15,83 @@ export class AppComponent {
   title = 'MEAN TODO APP';
   tasks:any= [];
   todoTitle = '';
-  page:number = 1;
-  pageSize: number = 10;
+  public total: number = 0;
+  public itemsPerPage: number = 5;
+  public p: number = 1;
+
+  taskEditable:any;
+  isEdit = false
   constructor(
     public addTodoService: AddTodoService,
     public getTodoService: GetAllTodoService,
     public delTodoService: DelTodoService,
-    public completeTodoService: CompleteTodoService
+    public completeTodoService: CompleteTodoService,
+    public updateTodoService:UpdateTodoService
   ) {
 
   }
 
+  changePageSize(){
+    this.getTodoList(1)
+   }
+
   ngOnInit(): void {
-    this.getTodoList()
-    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    //Add 'implements OnInit' to the class.
+    this.getTodoList(1)
+
   }
 
   addTask() {
     let task = {title: this.todoTitle}
     this.addTodoService.addTodo(task).subscribe(async (res: any) => {
       if (res.success) {
-       this.getTodoList();
+       this.getTodoList(1);
+       this.todoTitle = '';
 
       }
     })
+  }
+
+  updateTask(){
+    console.log(this.taskEditable)
+    this.updateTodoService.updateToDo(this.taskEditable).subscribe(async (res: any) => {
+      if (res.success) {
+       this.getTodoList(1);
+        this.cancelEdit()
+      }
+    })
+  }
+
+  cancelEdit(){
+    this.taskEditable = '';
+    this.isEdit = false
+
   }
 
   updateToComplete(_id:any){
     this.completeTodoService.completeTodo(_id).subscribe(async (res: any) => {
       if (res.success) {
-       this.getTodoList();
+       this.getTodoList(1);
 
       }
     })
   }
 
-  getTodoList(){
-    this.getTodoService.getTodoList().subscribe(async (res: any) => {
+  editTask(task:any){
+    this.taskEditable = task;
+    this.isEdit = true
+  }
+
+  getTodoList(page:number){
+    let pagination = {
+      page: page,
+      itemsPerPage: this.itemsPerPage,
+    }
+    this.getTodoService.getTodoList(pagination).subscribe(async (res: any) => {
       if (res.success) {
         console.log(res.data);
-        this.tasks = res.data
+        this.total=res.totalCount;
+        this.tasks = res.data;
+        this.p = page;
       }
     })
   }
@@ -63,7 +100,7 @@ export class AppComponent {
     this.delTodoService.delTodo(_id).subscribe(async (res: any) => {
       if (res.success) {
         console.log(res.data);
-        this.getTodoList();
+        this.getTodoList(1);
       }
     })
 

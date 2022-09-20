@@ -16,7 +16,7 @@ export class AddTodoService {
 
   addTodo(task:any) {
     this.headers.set('Content-Type', 'application/json; charset=utf-8');
-    return this._http.post(`${this.con}/api/todo/addTask`, task);
+    return this._http.post(`${this.con}/todo`, task);
   }
 
 }
