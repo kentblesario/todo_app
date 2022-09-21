@@ -15,8 +15,7 @@ export class CompleteTodoService {
   ) { }
 
   completeTodo(_id:any) {
-    console.log(_id);
     this.headers.set('Content-Type', 'application/json; charset=utf-8');
-    return this._http.put(`${this.con}/todo/complete`, { _id });
+    return this._http.put(`${this.con}/todo/complete/${_id}`,{});
   }
 }

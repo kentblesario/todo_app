@@ -7,10 +7,10 @@ router.post("/todo", todo.addTask);
 
 router.get("/todo", todo.getTodo);
 
-router.delete("/todo", todo.delTodo);
+router.delete("/todo/:id", todo.delTodo);
 
-router.put("/todo/complete", todo.completeTodo);
+router.put("/todo/complete/:id", todo.completeTodo);
 
-router.put("/todo", todo.updateToDo);
+router.put("/todo/:id", todo.updateToDo);
 
 module.exports = router;

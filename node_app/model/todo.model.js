@@ -1,7 +1,6 @@
 
 
 var mongoose = require('mongoose')
-console.log('todo model')
 const Todo = mongoose.model('todo', new mongoose.Schema({
 
     title: { type: String },

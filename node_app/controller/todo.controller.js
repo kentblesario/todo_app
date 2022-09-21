@@ -4,8 +4,8 @@ const mongoose = require('mongoose')
 const ObjectId = mongoose.Types.ObjectId;
 
 exports.addTask = async (req, res, next) => {
-    console.log('add', req.body)
-    req.body.dateAdded = new Date().getTime(),
+    try {
+        req.body.dateAdded = new Date().getTime(),
         Todo.create(req.body, (err, response) => {
             if (err) {
                 return res.status(500).send({ success: false, message: err.message });
@@ -13,10 +13,14 @@ exports.addTask = async (req, res, next) => {
                 return res.status(201).send({ success: true, data: response, message: "Successfully added a task." });
             }
         });
+    } catch (error) {
+        return res.status(500).send({ success: false, message: error.message });
+    }
 };
 
 exports.getTodo = async (req, res, next) => {
 
+  try {
     let totalCount = 1;
     await Todo.countDocuments({}).then(async result => {
         totalCount = await result;
@@ -26,53 +30,61 @@ exports.getTodo = async (req, res, next) => {
             if (response) {
                 return res.status(200).send({ success: true, data: response, totalCount: totalCount });
             } else {
-                return res.status(500).send({ success: false, message: err });
+                return res.status(500).send({ success: false, message: err.message });
             }
         })
+  } catch (error) {
+    return res.status(500).send({ success: false, message: error.message });
+  }
 };
 
 exports.delTodo = async (req, res, next) => {
-    console.log(req.query)
-    console.log(req.body)
-    console.log(req.params)
-    await Todo.deleteOne({ _id: ObjectId(req.query._id), })
-        .then(function (response, err) {
-            console.log(response);
-            if (response) {
+  try {
+    await Todo.deleteOne({ _id: ObjectId(req.params.id), })
+    .then(function (response, err) {
+        if (response) {
+            if(response.deletedCount > 0){
                 return res.status(200).send({ success: true, message: 'Successfully deleted the task.' });
-            } else {
-                return res.status(500).send({ success: false, message: err });
+            }else{
+                return res.status(404).send({ success: false, message: 'Task not found' });
             }
-        })
+        } else {
+            return res.status(500).send({ success: false, message: err.message });
+        }
+    })
+  } catch (error) {
+    return res.status(500).send({ success: false, message: error.message });
+
+  }
 
 };
 
 exports.completeTodo = async (req, res, next) => {
-    console.log(req.body)
-    console.log(req.query)
-    console.log(req.params)
+ try {
+      
     await Todo.updateOne( {
-        _id: ObjectId(req.body._id),
+        _id: ObjectId(req.params.id),
     },
     {
         $set:{status: 1}
     } )
     .then(function (response, err) {
-        console.log(response);
         if (response) {
             return res.status(200).send({ success: true, message: 'Successfully completed the task.' });
         } else {
             return res.status(500).send({ success: false, message: err });
         }
     })
+ } catch (error) {
+    return res.status(500).send({ success: false, message: error.message });
+
+ }
 };
 
 exports.updateToDo = async (req, res, next) => {
-    console.log(req.body)
-    console.log(req.query)
-    console.log(req.params)
+ try {
     await Todo.updateOne( {
-        _id: ObjectId(req.body.task._id),
+        _id: ObjectId(req.params.id),
     },
     {
         $set:{
@@ -81,11 +93,14 @@ exports.updateToDo = async (req, res, next) => {
         },
     } )
     .then(function (response, err) {
-        console.log(response);
         if (response) {
             return res.status(200).send({ success: true, message: 'Successfully updated the task.' });
         } else {
             return res.status(500).send({ success: false, message: err });
         }
     })
+ } catch (error) {
+    return res.status(500).send({ success: false, message: error.message });
+
+ }
 };

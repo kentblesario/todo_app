@@ -8,7 +8,7 @@ const connect = () => {
         useUnifiedTopology: true,
         dbName: env.DB_DATABASE
     }).then(() => {
-        // console.log("Successfully connect to database: " + `mongodb://${env.DB_HOST}:${env.DB_PORT}/${env.DB_DATABASE}`);
+        console.log("Successfully connect to database: " + `mongodb://${env.DB_HOST}:${env.DB_PORT}/${env.DB_DATABASE}`);
     }).catch(err => {
         console.error("Connection error", err);
         // process.exit();

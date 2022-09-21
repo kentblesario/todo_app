@@ -15,7 +15,7 @@ export class DelTodoService {
 
   delTodo(_id:any) {
     this.headers.set('Content-Type', 'application/json; charset=utf-8');
-    return this._http.delete(`${this.con}/todo`, { params: {_id} });
+    return this._http.delete(`${this.con}/todo/${_id}`);
   }
 
 }

@@ -52,7 +52,6 @@ export class AppComponent {
   }
 
   updateTask(){
-    console.log(this.taskEditable)
     this.updateTodoService.updateToDo(this.taskEditable).subscribe(async (res: any) => {
       if (res.success) {
        this.getTodoList(1);
@@ -88,7 +87,6 @@ export class AppComponent {
     }
     this.getTodoService.getTodoList(pagination).subscribe(async (res: any) => {
       if (res.success) {
-        console.log(res.data);
         this.total=res.totalCount;
         this.tasks = res.data;
         this.p = page;
@@ -99,7 +97,6 @@ export class AppComponent {
   delTask(_id:any){
     this.delTodoService.delTodo(_id).subscribe(async (res: any) => {
       if (res.success) {
-        console.log(res.data);
         this.getTodoList(1);
       }
     })

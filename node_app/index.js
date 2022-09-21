@@ -7,7 +7,6 @@ const server = require("http").createServer(app);
 const node_library = require("./library");
 const config = require("./config");
 const routes = require("./routes");
-console.log(routes, "routes");
 
 try {
   app.use(express.json({ limit: "50mb" }));
@@ -28,10 +27,9 @@ try {
   const port = process.env.PORT || 3000;
 
   app.listen(port, () => {
-    // console.log(`Server is running on port: ${port}`);
+    console.log(`Server is running on port: ${port}`);
   });
   module.exports = app;
 } catch (error) {
-  console.log("error in index:", error.message);
-  console.log("error in index:", error);
+  console.log("error in server:", error.message);
 }

@@ -14,9 +14,8 @@ export class UpdateTodoService {
   ) { }
 
   updateToDo(task:any) {
-    console.log(task);
     this.headers.set('Content-Type', 'application/json; charset=utf-8');
-    return this._http.put(`${this.con}/todo`, { task});
+    return this._http.put(`${this.con}/todo/${task._id}`, { task});
   }
 
 }
